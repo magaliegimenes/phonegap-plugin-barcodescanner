@@ -1929,9 +1929,9 @@ Ref<Binarizer> GlobalHistogramBinarizer::createBinarizer(Ref<LuminanceSource> so
 namespace zxing {
 
 GreyscaleLuminanceSource::GreyscaleLuminanceSource(unsigned char* greyData, int dataWidth,
-    int dataHeight, int left, int top, int width, int height) : greyData_(greyData),
+    int dataHeight, int left, int top, int width, int height, int frameCount) : greyData_(greyData),
     dataWidth_(dataWidth), dataHeight_(dataHeight), left_(left), top_(top), width_(width),
-    height_(height) {
+    height_(height), frameCount_(frameCount) {
 
   if (left + width > dataWidth || top + height > dataHeight || top < 0 || left < 0) {
     throw IllegalArgumentException("Crop rectangle does not fit within image data.");
@@ -2036,6 +2036,11 @@ unsigned char* GreyscaleRotatedLuminanceSource::getMatrix() {
   // This depends on getRow() honoring its second parameter.
   for (int y = 0; y < height_; y++) {
     getRow(y, &result[y * width_]);
+  }
+  if (frameCount_ == 3) {
+    for (int i = 0; i < size; i++) {
+      result[i] = static_cast<unsigned char>(255 - result[i]);;
+    }
   }
   return result;
 }

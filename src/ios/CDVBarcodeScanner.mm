@@ -71,6 +71,7 @@
 @property (nonatomic)         BOOL                        isFlipped;
 @property (nonatomic)         BOOL                        isTransitionAnimated;
 @property (nonatomic)         BOOL                        isSuccessBeepEnabled;
+@property (nonatomic)         int                         frameCount;
 
 
 - (id)initWithPlugin:(CDVBarcodeScanner*)plugin callback:(NSString*)callback parentViewController:(UIViewController*)parentViewController alterateOverlayXib:(NSString *)alternateXib;
@@ -682,9 +683,12 @@ parentViewController:(UIViewController*)parentViewController
     using namespace zxing;
 
     Ref<LuminanceSource> luminanceSource (
-                                          new GreyscaleLuminanceSource(greyData, (int)greyWidth, (int)greyWidth, 0, 0, (int)greyWidth, (int)greyWidth)
+                                          new GreyscaleLuminanceSource(greyData, (int)greyWidth, (int)greyWidth, 0, 0, (int)greyWidth, (int)greyWidth, self.frameCount)
                                           );
-
+    if (self.frameCount == 3) {
+        self.frameCount = 0;
+    }
+    self.frameCount++;
     return luminanceSource;
 }
 
